@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tara AI — Intelligent Voice Assistant (by Shahnawaz)</title>
+  
+  <!-- SEO & Social Meta -->
+  <meta name="description" content="Tara AI — Next-Generation Voice & Chat AI Assistant developed by Shahnawaz. Fast, smart, and friendly with sweet voice conversations.">
+  <meta name="theme-color" content="#0d1117">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <!-- Google Fonts: Outfit, Inter, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Icons: RemixIcon -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet" />
+
+  <!-- Highlight.js Theme (Atom One Dark) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="app-brand">
+          <div class="brand-logo tara-logo">
+            <img src="logo.png" alt="Tara AI Logo" class="brand-logo-img">
+          </div>
+          <div class="brand-text">
+            <h2>Tara AI</h2>
+            <span>by Shahnawaz</span>
+          </div>
+        </div>
+        <button class="icon-btn mobile-close-btn" id="closeSidebarBtn" title="Close Sidebar">
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+
+      <!-- New Chat Button -->
+      <button class="new-chat-btn" id="newChatBtn">
+        <i class="ri-add-line"></i>
+        <span>New Chat</span>
+        <kbd>Ctrl+K</kbd>
+      </button>
+
+      <!-- Chat Sessions History List -->
+      <div class="history-section">
+        <div class="history-title">
+          <span>Recent Chats</span>
+          <span class="chat-count-badge" id="chatCountBadge">0</span>
+        </div>
+        <div class="chat-history-list" id="chatHistoryList">
+          <!-- Dynamically populated via app.js -->
+        </div>
+      </div>
+
+      <!-- Sidebar Footer / Quick Controls -->
+      <div class="sidebar-footer">
+        <div class="api-status-badge" id="apiStatusBadge">
+          <span class="status-dot"></span>
+          <span class="status-text">Checking API...</span>
+        </div>
+
+        <div class="sidebar-actions">
+          <button class="footer-btn" id="openSettingsBtn" title="API Keys & Settings">
+            <i class="ri-settings-4-line"></i>
+            <span>Settings</span>
+          </button>
+          <button class="footer-btn" id="clearAllChatsBtn" title="Clear All History">
+            <i class="ri-delete-bin-line"></i>
+            <span>Clear History</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CHAT VIEWPORT -->
+    <main class="main-content">
+      <!-- Top Navbar / Header -->
+      <header class="chat-header">
+        <div class="header-left">
+          <button class="icon-btn mobile-menu-btn" id="toggleSidebarBtn" title="Open Sidebar">
+            <i class="ri-menu-2-line"></i>
+          </button>
+          <div class="session-info">
+            <h1 class="session-title" id="currentSessionTitle">Tara AI</h1>
+            <span class="session-subtitle" id="currentSessionSubtitle">Developed by Shahnawaz</span>
+          </div>
+        </div>
+
+        <div class="header-right">
+          <!-- Live Voice Call Mode Button -->
+          <button class="voice-call-toggle-btn" id="voiceCallToggleBtn" title="Tara se Live Baat Karein (Live Voice Call)">
+            <i class="ri-phone-fill"></i>
+            <span>Talk to Tara</span>
+          </button>
+
+          <!-- Persona Selector -->
+          <div class="select-wrapper persona-select-wrapper">
+            <i class="ri-user-star-line select-icon"></i>
+            <select id="personaSelector" title="Choose AI Persona">
+              <option value="general">🌸 Tara (Friendly & Fast)</option>
+              <option value="coder">💻 Tara (Expert Coder)</option>
+              <option value="tutor">📚 Tara (Teacher / Hinglish)</option>
+              <option value="creative">✍️ Tara (Creative Writer)</option>
+              <option value="concise">⚡ Tara (Lightning Fast)</option>
+            </select>
+          </div>
+
+          <!-- Model Selector -->
+          <div class="select-wrapper model-select-wrapper">
+            <i class="ri-cpu-line select-icon"></i>
+            <select id="modelSelector" title="Choose AI Model">
+              <option value="gemini-3.6-flash" data-provider="gemini">⚡ Gemini 3.6 Flash (Fastest)</option>
+              <option value="gemini-3.1-pro-preview" data-provider="gemini">🧠 Gemini 3.1 Pro (Deep)</option>
+              <option value="gemini-2.5-flash" data-provider="gemini">✨ Gemini 2.5 Flash</option>
+              <option value="grok-2-latest" data-provider="grok">⚡ Grok 2 (xAI Flagship)</option>
+              <option value="grok-beta" data-provider="grok">🚀 Grok Beta (xAI)</option>
+              <option value="grok-2-vision-1212" data-provider="grok">👁️ Grok 2 Vision (xAI)</option>
+              <option value="gpt-4o-mini" data-provider="openai">🔥 GPT-4o Mini (OpenAI)</option>
+              <option value="gpt-4o" data-provider="openai">💎 GPT-4o (OpenAI)</option>
+            </select>
+          </div>
+
+          <!-- Header Settings Icon -->
+          <button class="icon-btn header-btn" id="headerSettingsBtn" title="Settings & Sweet Voice">
+            <i class="ri-settings-3-line"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- API Key Notice Banner -->
+      <div class="api-warning-banner" id="apiWarningBanner">
+        <div class="banner-content">
+          <i class="ri-alert-line banner-icon"></i>
+          <span><strong>API Key Missing:</strong> Live AI responses ke liye Google Gemini API Key add karein (100% Free).</span>
+        </div>
+        <div class="banner-actions">
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="banner-btn-link">
+            Get Free Key <i class="ri-external-link-line"></i>
+          </a>
+          <button class="banner-btn" id="bannerSettingsBtn">
+            <i class="ri-key-line"></i> Add Key
+          </button>
+          <button class="banner-btn-demo" id="enableDemoBtn" title="Test with offline demo mode">
+            <i class="ri-magic-line"></i> Try Demo Mode
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <section class="chat-messages-container" id="chatMessagesContainer">
+        <!-- Welcome Screen (shown when current chat is empty) -->
+        <div class="welcome-screen" id="welcomeScreen">
+          <div class="welcome-glow"></div>
+          <div class="welcome-icon">
+            <img src="logo.png" alt="Tara AI Logo" class="welcome-logo-img">
+          </div>
+          <h2 class="welcome-title">Namaste! Main Tara AI hoon 🌸</h2>
+          <p class="welcome-subtitle">Developed by Shahnawaz. Main aapke sabhi questions, coding, research aur tasks me fastest help kar sakti hoon.</p>
+
+          <!-- Quick Suggestion Cards -->
+          <div class="suggestion-grid">
+            <button class="suggestion-card" data-prompt="Explain Quantum Computing in simple words with real life examples.">
+              <div class="card-icon"><i class="ri-compass-3-line"></i></div>
+              <div class="card-text">
+                <strong>Explain Quantum Computing</strong>
+                <span>Simple explanation with everyday analogies</span>
+              </div>
+            </button>
+
+            <button class="suggestion-card" data-prompt="Write a modern, responsive HTML/CSS/JS Landing Page with dark mode and smooth animations.">
+              <div class="card-icon"><i class="ri-code-s-slash-line"></i></div>
+              <div class="card-text">
+                <strong>Write Landing Page Code</strong>
+                <span>Modern responsive HTML/CSS/JS template</span>
+              </div>
+            </button>
+
+            <button class="suggestion-card" data-prompt="Mera resume improve karne ke liye top 5 tips aur strong action words ki list banao (Hinglish/English).">
+              <div class="card-icon"><i class="ri-file-user-line"></i></div>
+              <div class="card-text">
+                <strong>Resume Improvement Tips</strong>
+                <span>Professional guidelines & action verbs in Hinglish</span>
+              </div>
+            </button>
+
+            <button class="suggestion-card" data-prompt="Create a 7-day high productivity study and fitness routine with daily actionable milestones.">
+              <div class="card-icon"><i class="ri-calendar-check-line"></i></div>
+              <div class="card-text">
+                <strong>Productivity & Fitness Plan</strong>
+                <span>Actionable 7-day schedule with milestones</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Message List -->
+        <div class="messages-list" id="messagesList"></div>
+      </section>
+
+      <!-- Chat Input Area -->
+      <footer class="chat-input-area">
+        <div class="input-glow-wrapper">
+          <div class="input-container">
+            <!-- Voice Input Button -->
+            <button class="input-action-btn" id="voiceInputBtn" title="Voice Input (Speech-to-Text)">
+              <i class="ri-mic-line"></i>
+            </button>
+
+            <!-- Auto-expanding Textarea -->
+            <textarea
+              id="messageInput"
+              placeholder="Ask me anything... (Shift+Enter for newline, Enter to send)"
+              rows="1"
+              maxlength="10000"
+            ></textarea>
+
+            <!-- Input Controls (Right) -->
+            <div class="input-right-controls">
+              <!-- Stop Generation Button (Hidden by default) -->
+              <button class="stop-btn" id="stopGenerationBtn" title="Stop Generation" style="display: none;">
+                <i class="ri-stop-circle-line"></i>
+                <span>Stop</span>
+              </button>
+
+              <!-- Send Button -->
+              <button class="send-btn" id="sendMessageBtn" title="Send Message (Enter)">
+                <i class="ri-send-plane-2-fill"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="input-footer-bar">
+          <span class="info-tag">Nexus AI may produce inaccurate information. Verify critical data.</span>
+          <span class="char-counter" id="charCounter">0 / 10000</span>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- SETTINGS & API KEYS MODAL -->
+  <div class="modal-backdrop" id="settingsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <i class="ri-key-2-line"></i>
+          <h3>API Keys & Configuration</h3>
+        </div>
+        <button class="icon-btn modal-close-btn" id="closeSettingsModalBtn">
+          <i class="ri-close-line"></i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Banner Notice -->
+        <div class="alert-box alert-info">
+          <i class="ri-information-line"></i>
+          <div>
+            <strong>Kahan se milegi API Key?</strong>
+            <p>Aap direct Google AI Studio se 100% Free Gemini API key generate karke yahan daal sakte hain. Aapki key aapke local browser me securely save rahegi.</p>
+          </div>
+        </div>
+
+        <!-- Google Gemini Section -->
+        <div class="form-group">
+          <div class="form-label-row">
+            <label for="geminiApiKeyInput">
+              <i class="ri-google-fill text-google"></i>
+              Google Gemini API Key 
+              <span class="badge-free">Free Tier Available</span>
+            </label>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="key-link">
+              Get Free Key <i class="ri-external-link-line"></i>
+            </a>
+          </div>
+          <div class="password-input-wrapper">
+            <input type="password" id="geminiApiKeyInput" placeholder="AIzaSy...">
+            <button type="button" class="toggle-password-btn" data-target="geminiApiKeyInput">
+              <i class="ri-eye-line"></i>
+            </button>
+          </div>
+          <small class="form-help">Recommended! Gemini 1.5 Flash is blazing fast and free for developer usage.</small>
+        </div>
+
+        <!-- OpenAI Section -->
+        <div class="form-group">
+          <div class="form-label-row">
+            <label for="openaiApiKeyInput">
+              <i class="ri-openai-fill text-openai"></i>
+              OpenAI API Key (Optional)
+            </label>
+            <a href="https://platform.openai.com/api-keys" target="_blank" rel="noopener" class="key-link">
+              Get OpenAI Key <i class="ri-external-link-line"></i>
+            </a>
+          </div>
+          <div class="password-input-wrapper">
+            <input type="password" id="openaiApiKeyInput" placeholder="sk-proj-...">
+            <button type="button" class="toggle-password-btn" data-target="openaiApiKeyInput">
+              <i class="ri-eye-line"></i>
+            </button>
+          </div>
+          <small class="form-help">Required only if you want to use GPT-4o / GPT-4o-mini.</small>
+        </div>
+
+        <!-- Grok (xAI) Section -->
+        <div class="form-group">
+          <div class="form-label-row">
+            <label for="grokApiKeyInput">
+              <i class="ri-flashlight-fill text-grok"></i>
+              Grok API Key (xAI)
+            </label>
+            <a href="https://console.x.ai/" target="_blank" rel="noopener" class="key-link">
+              Get Grok Key <i class="ri-external-link-line"></i>
+            </a>
+          </div>
+          <div class="password-input-wrapper">
+            <input type="password" id="grokApiKeyInput" placeholder="xai-...">
+            <button type="button" class="toggle-password-btn" data-target="grokApiKeyInput">
+              <i class="ri-eye-line"></i>
+            </button>
+          </div>
+          <small class="form-help">Required if you want to chat with Grok 2 / Grok Beta (xAI).</small>
+        </div>
+
+        <hr class="modal-divider">
+
+        <!-- Advanced Customization -->
+        <div class="form-group">
+          <label for="customSystemPrompt">
+            <i class="ri-file-edit-line"></i>
+            Custom System Prompt / Behavior
+          </label>
+          <textarea id="customSystemPrompt" rows="3" placeholder="You are an intelligent AI assistant..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label for="temperatureRange">
+              <i class="ri-fire-line"></i>
+              Creativity / Temperature (<span id="tempValueDisplay">0.7</span>)
+            </label>
+          </div>
+          <input type="range" id="temperatureRange" min="0" max="1" step="0.05" value="0.7">
+          <div class="range-labels">
+            <span>Precise (0.0)</span>
+            <span>Balanced (0.7)</span>
+            <span>Creative (1.0)</span>
+          </div>
+        </div>
+
+        <!-- Voice Settings -->
+        <hr class="modal-divider">
+        <div class="form-group">
+          <div class="form-label-row">
+            <label for="voiceSelector">
+              <i class="ri-women-line text-pink"></i>
+              Tara's Voice (Sweet Girl / Meethi Aawaz)
+            </label>
+            <button type="button" class="btn-text" id="testVoiceBtn">
+              <i class="ri-volume-up-line"></i> Test Voice
+            </button>
+          </div>
+          <select id="voiceSelector" class="form-select"></select>
+          <small class="form-help">Indian English / Hindi Female voices selected for sweet, natural real-girl tone.</small>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label for="voicePitchRange">
+              <i class="ri-sound-module-line"></i>
+              Voice Sweetness / Pitch (<span id="pitchDisplay">1.25</span>)
+            </label>
+          </div>
+          <input type="range" id="voicePitchRange" min="0.8" max="1.6" step="0.05" value="1.25">
+          <div class="range-labels">
+            <span>Deeper (0.8)</span>
+            <span>Sweet Girl (1.25)</span>
+            <span>High Pitch (1.6)</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="form-label-row">
+            <label for="voiceSpeedRange">
+              <i class="ri-speed-up-line"></i>
+              Speaking Speed (<span id="speedDisplay">1.05</span>)
+            </label>
+          </div>
+          <input type="range" id="voiceSpeedRange" min="0.8" max="1.5" step="0.05" value="1.05">
+          <div class="range-labels">
+            <span>Slow (0.8)</span>
+            <span>Normal (1.05)</span>
+            <span>Fast (1.5)</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="autoSpeakCheckbox">
+            <span>Har message par Tara ki aawaz suniye (Auto-Read Aloud)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelSettingsBtn">Cancel</button>
+        <button class="btn btn-primary" id="saveSettingsBtn">
+          <i class="ri-save-3-line"></i>
+          Save Settings
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE VOICE CALL MODAL (TARA SE BAAT KAREIN) -->
+  <div class="voice-call-overlay" id="voiceCallOverlay">
+    <div class="voice-call-card">
+      <div class="call-header">
+        <div class="call-avatar">
+          <img src="logo.png" alt="Tara AI" class="call-logo-img">
+        </div>
+        <h3>Talking with Tara AI</h3>
+        <span class="call-status" id="callStatusText">Listening to you... Speak now</span>
+      </div>
+
+      <!-- Glowing Voice Orb Visualizer -->
+      <div class="voice-orb-container">
+        <div class="voice-orb" id="voiceOrb">
+          <div class="orb-core"></div>
+          <div class="orb-wave wave-1"></div>
+          <div class="orb-wave wave-2"></div>
+          <div class="orb-wave wave-3"></div>
+        </div>
+      </div>
+
+      <!-- Live Transcript Subtitle -->
+      <div class="call-subtitle-box">
+        <p id="callSubtitle">"Namaste! Main Tara hoon. Kuch bhi boliye, main sun rahi hoon..."</p>
+      </div>
+
+      <!-- Call Controls -->
+      <div class="call-controls">
+        <button class="call-action-btn mic-btn" id="callMicToggleBtn" title="Mute/Unmute Mic">
+          <i class="ri-mic-line"></i>
+        </button>
+        <button class="call-action-btn end-call-btn" id="endCallBtn" title="End Voice Call">
+          <i class="ri-phone-fill"></i>
+          <span>End Call</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Markdown & Syntax Highlighter Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/bash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/css.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/html.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.2/dist/purify.min.js"></script>
+
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
